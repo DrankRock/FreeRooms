@@ -1,0 +1,44 @@
+name: Update Room Schedule
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape-and-commit:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # Or your preferred version
+          cache: 'pip' # Cache dependencies
+
+      - name: Install dependencies
+        run: |
+          pip install selenium
+          pip install requests
+          
+      - name: Run scraper
+        run: |
+          python scrap.py > schedule.json
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions-bot@github.com"
+          git add schedule.json
+          git diff --staged --quiet || git commit -m "chore: Update room schedule"
+          git push
