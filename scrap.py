@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.options import Options # options, to avoid single
 from selenium.webdriver.support.ui import WebDriverWait # Wait for the cookie
 from selenium.webdriver.support import expected_conditions as EC # Same as above
 from selenium.common.exceptions import TimeoutException # Same as above
+import json
 
 BUILDING_ROOMS = {
     "IM2AG_Bâtiment F": [
@@ -104,8 +105,8 @@ if __name__ == "__main__":
 
         # 2. Check if we found at least two times (start and end)
         if len(times) >= 2 :
-            print("------------------------",element)
-            print("Found times:", times) # Better debug print
+            # print("------------------------",element)
+            # print("Found times:", times) # Better debug print
             
             rooms = []
             for prefix in roomPrefix :
@@ -133,13 +134,13 @@ if __name__ == "__main__":
                     roomDict[room] = [[timeStart, timeEnd]]
                 else :
                     roomDict[room].append([timeStart, timeEnd])
-            driver.close()
+    driver.quit()
 
-            # Add rooms that are not in the dictionary (i.e., completely free)
-            for room in ROOMS:
-                if room not in roomDict:
-                    roomDict[room] = [] # Represented as an empty list of bookings
-                    
-            # Output the entire dictionary as a JSON string
-            # sort_keys=True ensures the output file is consistent for git diffs
-            print(json.dumps(roomDict, indent=2, sort_keys=True))
+    # Add rooms that are not in the dictionary (i.e., completely free)
+    for room in ROOMS:
+        if room not in roomDict:
+            roomDict[room] = [] # Represented as an empty list of bookings
+            
+    # Output the entire dictionary as a JSON string
+    # sort_keys=True ensures the output file is consistent for git diffs
+    print(json.dumps(roomDict, indent=2, sort_keys=True))
