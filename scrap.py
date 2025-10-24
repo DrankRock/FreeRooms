@@ -1,146 +1,122 @@
-import argparse, time# arguments parsing, sleep
-import re # scrape calendar data
-from selenium import webdriver # open chromium webdriver
-from selenium.webdriver.common.by import By # parse data from selenium
-from selenium.webdriver.chrome.options import Options # options, to avoid singleLink autoclosing.
-from selenium.webdriver.support.ui import WebDriverWait # Wait for the cookie
-from selenium.webdriver.support import expected_conditions as EC # Same as above
-from selenium.common.exceptions import TimeoutException # Same as above
-import json
+import time, json, re
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 BUILDING_ROOMS = {
-    "IM2AG_Bâtiment F": [
-        'f018','f022','f316','f320','f107','f109','f111','f112',
-        'f113','f114','f115','f116','f117','f118','f218','f319',
-        'f321','f201','f202','f203','f204','f211','f212','f213',
-        'f214','f215','f216','f217'
-    ]
-    # You can add other buildings here, e.g.:
-    # "IM2AG_Bâtiment G": ['g101', 'g102', ...]
+    "IM2AG_F": {
+        "search_term": "IM2AG_Bâtiment F",
+        "display_name": "IM2AG",
+        "rooms": [
+            'f018','f022','f316','f320','f107','f109','f111','f112',
+            'f113','f114','f115','f116','f117','f118','f218','f319',
+            'f321','f201','f202','f203','f204','f211','f212','f213',
+            'f214','f215','f216','f217'
+        ]
+    }
 }
 
-
+"""
+open a single url in a headless chrome browser, and return the corresponding driver
+"""
 def openSingleLink(link) :
     chrome_options = Options()
     chrome_options.add_experimental_option("detach", True)
-
     # Add arguments for headless operation
     chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--window-size=1920,1080") # Specify window size to avoid element rendering issues
-    chrome_options.add_argument("--no-sandbox") # Bypasses OS security model, often required in containers
-    chrome_options.add_argument("--disable-dev-shm-usage") # Overcomes limited resource problems
-
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(link)
     return driver
 
-def args():
-    parser = argparse.ArgumentParser(description='Cherche une salle libre sur ADE')
-    parser.add_argument('-s', '--sallelibre', help='Cherche une salle libre dans la tranche horraire donnée en parametres', required=True, action='store', nargs=2)
-    return parser.parse_args()
+"""
+Scrape the content of a building, as an element of the BUILDING_ROOMS
+Find each rooms taken today, for a given search query
+Do not use for weekly or for too many places at once, this **will** crash. 
+"""
+def scrape_building(search_term, building_rooms):
+    """
+    Scrapes all room data for a single building.
+    Returns a dictionary of room schedules.
+    """
+    driver = None
+    roomDict = {}
+    
+    try:
+        driver = openSingleLink("https://redirect.univ-grenoble-alpes.fr/ADE_ENSEIGNANTS")
+        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="x-auto-15-input"]'))).click()
+        driver.find_element(By.XPATH, '/html/body/div[4]/div/div[1]').click()
+        time.sleep(2)
+        
+        search = driver.find_element(By.XPATH, '//*[@id="x-auto-111-input"]')
+        search.send_keys(search_term)
+        
+        driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table/tbody/tr[2]/td[2]/em/button').click()
+        
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]/div/div[4]')))
+        
+        source = driver.page_source
+        occurences = re.findall('<div unselectable="on"(.*?)>', source)
+        
+        for element in occurences :
+            times = re.findall(r'([0-9][0-9]h[0-9][0-9])', element)
 
-def hourToValue(hour): #takes a string "18h30"
-        timeSplit = hour.split("h")
-        return int(timeSplit[0])*60 + int(timeSplit[1])
+            if len(times) >= 2 :
+                timeStart = times[0]
+                timeEnd = times[1]
+                
+                found_rooms_for_event = []
+                for room_name in building_rooms:
+                    escaped_room_name = re.escape(room_name)
+                    
+                    pattern1 = r'{}\[=\"\"'.format(escaped_room_name)
+                    pattern2 = r'{}=\"\"'.format(escaped_room_name)
+                    
+                    if re.search(pattern1, element) or re.search(pattern2, element):
+                        found_rooms_for_event.append(room_name)
 
-def hourListProcess(timeList, wantedTimeStart, wantedTimeEnd):
+                for room in found_rooms_for_event :
+                    if room not in roomDict :
+                        roomDict[room] = [[timeStart, timeEnd]]
+                    else :
+                        roomDict[room].append([timeStart, timeEnd])
 
-    wantedStart = hourToValue(wantedTimeStart)
-    wantedEnd = hourToValue(wantedTimeEnd)
-    timeValues = []
-    for elemnt in timeList :
-        timeValueStart = hourToValue(elemnt[0])
-        timeValueEnd = hourToValue(elemnt[1])
-        timeValues.append([timeValueStart, timeValueEnd])
-    sortedList = sorted(timeValues, key=lambda x: x[0])
-    if len(sortedList) == 1 :
-        if wantedEnd < sortedList[0][0] or wantedStart > sortedList[0][1] :
-            return True
-        else :
-            return False
-    else :
-        if wantedEnd < sortedList[0][0] :
-            return True
-        for i in range(len(sortedList)-1) :
-            if wantedStart > sortedList[i][1] and wantedEnd < sortedList[i+1][0] :
-                return True
-        if wantedStart > sortedList[len(sortedList)-1][1] :
-            return True
-
-    return False
-
-    # print("Element : {} ; times : {} - {}".format(elemnt, timeValueStart, timeValueEnd))
+        for room in building_rooms:
+            if room not in roomDict:
+                roomDict[room] = [] # Represented as an empty list of bookings
+                
+    except Exception as e:
+        print(f"ERROR: Failed to scrape {search_term}: {e}", flush=True)
+        return {}
+    finally:
+        if driver:
+            driver.quit()
+            
+    return roomDict
 
 
 if __name__ == "__main__":
-    args = args()
+    
+    all_schedules = {}
 
-    if hourToValue(args.sallelibre[0]) > hourToValue(args.sallelibre[1]) :
-        print("ERREUR : L'heure de début est après l'heure de fin !")
-        exit(0)
-    
-    roomDict = {}
-    
-    # Use the first building defined in the dictionary
-    search_building = list(BUILDING_ROOMS.keys())[0]
-    ROOMS = BUILDING_ROOMS[search_building]
-    
-    # This prefix is used by the regex. Update if room names change (e.g., 'g' for G building)
-    roomPrefix = ['f'] 
-    
-    driver = openSingleLink("https://redirect.univ-grenoble-alpes.fr/ADE_ENSEIGNANTS")
-    WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="x-auto-15-input"]'))).click()
-    driver.find_element(By.XPATH, '/html/body/div[4]/div/div[1]').click()
-    time.sleep(2)
-    search = driver.find_element(By.XPATH, '//*[@id="x-auto-111-input"]')
-    search.send_keys(search_building)
-    driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table/tbody/tr[2]/td[2]/em/button').click()
-    #print(driver.page_source)
-    WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]/div/div[4]')))
-    source = driver.page_source
-    occurences = re.findall('<div unselectable="on"(.*?)>', source)
-    for element in occurences :
-        # 1. Use a simpler regex to find all "XXhXX" patterns
-        times = re.findall(r'([0-9][0-9]h[0-9][0-9])', element)
+    print(f"Starting scrape for {len(BUILDING_ROOMS)} building(s)...", flush=True)
 
-        # 2. Check if we found at least two times (start and end)
-        if len(times) >= 2 :
-            # print("------------------------",element)
-            # print("Found times:", times) # Better debug print
-            
-            rooms = []
-            for prefix in roomPrefix :
-                # 3. Use raw strings (r"...") to fix the SyntaxWarning
-                room = re.findall(r'{}[0-9]*\[=\"\"'.format(prefix), element)
-                room2 = re.findall(r'{}[0-9]*=\"\"'.format(prefix), element)
-                room = room + room2
-                rooms = rooms + room
-            
-            # 4. Directly assign times. No need for another regex.
-            timeStart = times[0]
-            timeEnd = times[1]
-            
-            okRoom = []
-            for elem in room :
-                for prefix in roomPrefix :
-                    # 3. Use raw strings (r"...") here too
-                    x = re.findall(r'{}[0-9]*'.format(prefix), elem)
-                    if len(x) > 0 :
-                        okRoom.append(x[0])
-            
-            # print("Ok rooms = {} -- {} - {}".format(okRoom, timeStart, timeEnd))
-            for room in okRoom :
-                if room not in roomDict :
-                    roomDict[room] = [[timeStart, timeEnd]]
-                else :
-                    roomDict[room].append([timeStart, timeEnd])
-    driver.quit()
+    for building_key, building_data in BUILDING_ROOMS.items():
+        
+        print(f"Scraping: {building_key} ({building_data['search_term']})...", flush=True)
+        
+        schedule_data = scrape_building(
+            building_data["search_term"],
+            building_data["rooms"]
+        )
+        
+        all_schedules[building_data["display_name"]] = schedule_data
 
-    # Add rooms that are not in the dictionary (i.e., completely free)
-    for room in ROOMS:
-        if room not in roomDict:
-            roomDict[room] = [] # Represented as an empty list of bookings
-            
-    # Output the entire dictionary as a JSON string
-    # sort_keys=True ensures the output file is consistent for git diffs
-    print(json.dumps(roomDict, indent=2, sort_keys=True))
+    print("Scraping complete. Final JSON output:", flush=True)
+    print(json.dumps(all_schedules, indent=2, sort_keys=True))
