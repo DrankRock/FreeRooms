@@ -1,4 +1,5 @@
 import time, json, re
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -47,22 +48,27 @@ def scrape_building(search_term, building_rooms):
     """
     driver = None
     roomDict = {}
+    print(f"  Scraping {search_term}...", flush=True)
     
     try:
         driver = openSingleLink("https://redirect.univ-grenoble-alpes.fr/ADE_ENSEIGNANTS")
+        print(f"  Page opened. Waiting for elements...", flush=True)
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="x-auto-15-input"]'))).click()
         driver.find_element(By.XPATH, '/html/body/div[4]/div/div[1]').click()
         time.sleep(2)
         
         search = driver.find_element(By.XPATH, '//*[@id="x-auto-111-input"]')
         search.send_keys(search_term)
+        print(f"  Searching for '{search_term}'...", flush=True)
         
         driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table/tbody/tr[2]/td[2]/em/button').click()
         
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]/div/div[4]')))
+        print("  Calendar grid loaded. Scraping page source...", flush=True)
         
         source = driver.page_source
         occurences = re.findall('<div unselectable="on"(.*?)>', source)
+        print(f"  Found {len(occurences)} potential event elements.", flush=True)
         
         for element in occurences :
             times = re.findall(r'([0-9][0-9]h[0-9][0-9])', element)
@@ -90,12 +96,15 @@ def scrape_building(search_term, building_rooms):
         for room in building_rooms:
             if room not in roomDict:
                 roomDict[room] = [] # Represented as an empty list of bookings
-                
+        
+        print(f"  Processed all elements. Found data for {len(roomDict)} rooms.", flush=True)
+            
     except Exception as e:
         print(f"ERROR: Failed to scrape {search_term}: {e}", flush=True)
-        return {}
+        return {} # Return empty dict on failure
     finally:
         if driver:
+            print(f"  Closing driver for {search_term}.", flush=True)
             driver.quit()
             
     return roomDict
@@ -104,19 +113,39 @@ def scrape_building(search_term, building_rooms):
 if __name__ == "__main__":
     
     all_schedules = {}
+    output_filename = "schedule.json"
 
     print(f"Starting scrape for {len(BUILDING_ROOMS)} building(s)...", flush=True)
 
     for building_key, building_data in BUILDING_ROOMS.items():
         
-        print(f"Scraping: {building_key} ({building_data['search_term']})...", flush=True)
+        print(f"Processing: {building_key} ({building_data['search_term']})...", flush=True)
         
         schedule_data = scrape_building(
             building_data["search_term"],
             building_data["rooms"]
         )
         
-        all_schedules[building_data["display_name"]] = schedule_data
+        # Get timestamp *after* scraping is complete for this building
+        update_time_iso = datetime.now().isoformat()
+        
+        if schedule_data:
+            print(f"Successfully scraped data for {building_key}.", flush=True)
+        else:
+            print(f"No data found or error during scrape for {building_key}.", flush=True)
 
-    print("Scraping complete. Final JSON output:", flush=True)
-    print(json.dumps(all_schedules, indent=2, sort_keys=True))
+        # Structure the data with last_update and room schedules
+        all_schedules[building_data["display_name"]] = {
+            "last_update": update_time_iso,
+            "rooms": schedule_data
+        }
+
+    print("All scraping complete.", flush=True)
+
+    # Save the final dictionary to the specified JSON file
+    try:
+        with open(output_filename, 'w', encoding='utf-8') as f:
+            json.dump(all_schedules, f, indent=2, sort_keys=True, ensure_ascii=False)
+        print(f"Successfully saved schedules to {output_filename}", flush=True)
+    except Exception as e:
+        print(f"ERROR: Failed to write to {output_filename}: {e}", flush=True)
