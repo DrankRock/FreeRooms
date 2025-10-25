@@ -38,7 +38,7 @@ jobs:
           
       - name: Run scraper
         run: |
-          python scrap.py > schedule.json
+          python scrap.py
 
       - name: Commit and push changes
         run: |
