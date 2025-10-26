@@ -1,6 +1,62 @@
 {
+  "Fac Droit": {
+    "last_update": "2025-10-26T19:38:37.484596",
+    "rooms": {
+      "Salle 306": [],
+      "Salle B214 idex": [],
+      "Salle B215 idex": [],
+      "Salle B313": [],
+      "Salle B406": [],
+      "Salle B407": [],
+      "Salle soutenance B321": [],
+      "Séminaire 1": [],
+      "Séminaire 2": [],
+      "Séminaire 3": [],
+      "salle B001": [],
+      "salle B002": [],
+      "salle B004": [],
+      "salle B005": [],
+      "salle B101 Langues": [],
+      "salle B102 Langues": [],
+      "salle B103 Langues": [],
+      "salle B104 Langues": [],
+      "salle B106 Langues": [],
+      "salle B107": [],
+      "salle B108": [],
+      "salle B109": [],
+      "salle B209": [],
+      "salle B212": [],
+      "salle B213": []
+    }
+  },
+  "Fac Eco Gestion": {
+    "last_update": "2025-10-26T19:38:48.241867",
+    "rooms": {
+      "Salle 101": [],
+      "Salle 104": [],
+      "Salle 106": [],
+      "Salle 107 Info": [],
+      "Salle 108": [],
+      "Salle 110": [],
+      "Salle 112 Info": [],
+      "Salle 400": [],
+      "Salle 524": [],
+      "Salle EG01": [],
+      "Salle EG02": [],
+      "Salle EG03": [],
+      "Salle EG04": [],
+      "Salle EG05": [],
+      "Salle EG06": [],
+      "Salle EG07 Info": [],
+      "Salle EG09": [],
+      "Salle EPE (204-205)": [],
+      "Salle Entresol": [],
+      "Salle Fardeheb": [],
+      "Salle IES": []
+    }
+  },
   "IM2AG": {
-    "last_update": "2025-10-26T12:01:52.239813",
+    "last_update": "2025-10-26T19:38:26.447614",
     "rooms": {
       "f018": [
         [
