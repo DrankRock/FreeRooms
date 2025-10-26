@@ -12,6 +12,16 @@ DEBUG = True
 # ------------------
 
 BUILDING_ROOMS = {
+    "IM2AG_F": {
+        "search_term": "IM2AG_Bâtiment F", 
+        "display_name": "IM2AG",
+        "rooms": [
+            'f018','f022','f316','f320','f107','f109','f111','f112',
+            'f113','f114','f115','f116','f117','f118','f218','f319',
+            'f321','f201','f202','f203','f204','f211','f212','f213',
+            'f214','f215','f216','f217'
+        ]
+    }, 
     "Fac droit": {
         "search_term": "Droit_Aile", 
         "display_name": "Fac Droit",
