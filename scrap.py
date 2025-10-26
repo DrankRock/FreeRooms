@@ -15,9 +15,6 @@ DEBUG = False
 
 BUILDING_ROOMS = {
     "IM2AG_F": {
-        # --- FIX ---
-        # This MUST be the building search term, not a single room.
-        # The script searches this page, then finds all rooms in the list.
         "search_term": "IM2AG_Bâtiment F", 
         "display_name": "IM2AG",
         "rooms": [
@@ -25,6 +22,34 @@ BUILDING_ROOMS = {
             'f113','f114','f115','f116','f117','f118','f218','f319',
             'f321','f201','f202','f203','f204','f211','f212','f213',
             'f214','f215','f216','f217'
+        ]
+    }, 
+    "Fac droit": {
+        "search_term": "Droit_Aile", 
+        "display_name": "Fac Droit",
+        "rooms": [
+            'Salle 306', 'Séminaire 1', 'Séminaire 2', 
+            'Séminaire 3', 'salle B001', 'salle B002', 
+            'salle B004', 'salle B005', 'salle B101 Langues', 
+            'salle B102 Langues', 'salle B103 Langues', 
+            'salle B104 Langues', 'salle B106 Langues', 
+            'salle B107', 'salle B108', 'salle B109', 
+            'salle B209', 'salle B212', 'salle B213', 
+            'Salle B214 idex', 'Salle B215 idex', 
+            'Salle B313', 'Salle B406', 'Salle B407', 
+            'Salle soutenance B321', 'Salle soutenance B321'
+        ]
+    }, 
+    "Fac Eco Gestion": {
+        "search_term": "FEG_Salle", 
+        "display_name": "Fac Eco Gestion",
+        "rooms": [
+            'Salle 101', 'Salle 104', 'Salle 106', 'Salle 108', 
+            'Salle 110', 'Salle 400', 'Salle 524', 'Salle EG09', 
+            'Salle EPE (204-205)', 'Salle Entresol', 'Salle Fardeheb', 
+            'Salle IES', 'Salle EG01', 'Salle EG02', 'Salle EG03', 
+            'Salle EG04', 'Salle EG05', 'Salle 107 Info', 
+            'Salle 112 Info', 'Salle EG06', 'Salle EG07 Info'
         ]
     }
 }

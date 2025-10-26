@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "pickerjs": "^1.2.1",
+    "timepicker-ui": "^3.0.1"
+  }
+}
