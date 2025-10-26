@@ -8,22 +8,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
 # --- DEBUG FLAG ---
-# Set to True for verbose, step-by-step logging inside the scraper
-# Set to False for standard, quieter operation
 DEBUG = True
 # ------------------
 
 BUILDING_ROOMS = {
-    "IM2AG_F": {
-        "search_term": "IM2AG_Bâtiment F", 
-        "display_name": "IM2AG",
-        "rooms": [
-            'f018','f022','f316','f320','f107','f109','f111','f112',
-            'f113','f114','f115','f116','f117','f118','f218','f319',
-            'f321','f201','f202','f203','f204','f211','f212','f213',
-            'f214','f215','f216','f217'
-        ]
-    }, 
     "Fac droit": {
         "search_term": "Droit_Aile", 
         "display_name": "Fac Droit",
@@ -72,6 +60,11 @@ def openSingleLink(link) :
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     
+    # --- STABILITY FIX ---
+    # Add disable-gpu flag for CI environments
+    chrome_options.add_argument("--disable-gpu")
+    # ---------------------
+    
     driver = webdriver.Chrome(options=chrome_options)
     
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
@@ -96,18 +89,26 @@ def scrape_building(search_term, building_rooms):
     try:
         driver = openSingleLink("https://redirect.univ-grenoble-alpes.fr/ADE_ENSEIGNANTS")
         print(f"  Page opened. Waiting for elements...", flush=True)
-        # Increased wait time slightly in case of slow loads
-        WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="x-auto-15-input"]'))).click()
-        driver.find_element(By.XPATH, '/html/body/div[4]/div/div[1]').click()
-        time.sleep(2)
+
+        # --- STABILITY FIX: Increased timeout and more robust click chain ---
         
-        search = driver.find_element(By.XPATH, '//*[@id="x-auto-111-input"]')
+        # 1. Wait for and click the first element
+        WebDriverWait(driver, 35).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="x-auto-15-input"]'))).click()
+        
+        # 2. Wait for the *next* element to be clickable, replacing time.sleep(2)
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[4]/div/div[1]'))).click()
+        
+        # 3. Wait for the search box to be ready
+        search = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="x-auto-111-input"]')))
+        # --- END FIX ---
+        
         search.send_keys(search_term)
         print(f"  Searching for '{search_term}'...", flush=True)
         
         driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[2]/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table/tbody/tr[2]/td[2]/em/button').click()
         
-        WebDriverWait(driver, 25).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]/div/div[4]')))
+        # Increased main calendar wait
+        WebDriverWait(driver, 35).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]/div/div[4]')))
         print("  Calendar grid loaded. Scraping page source...", flush=True)
         
         source = driver.page_source
@@ -138,16 +139,14 @@ def scrape_building(search_term, building_rooms):
                 found_rooms_for_event = []
                 
                 if DEBUG:
-                    # Truncate list to avoid spamming the console
                     print(f"  Checking against rooms list (first 5): {building_rooms[:5]}...", flush=True)
 
                 for room_name in building_rooms:
-                    
-                    search_name = room_name # Default for rooms like 'Salle 101'
+                    search_name = room_name 
                     if room_name.startswith('Droit A _ '):
-                        search_name = room_name[10:] # Get 'Séminaire 3'
+                        search_name = room_name[10:] 
                     elif room_name.startswith('Droit B_ '):
-                        search_name = room_name[9:]  # Get 'salle B004'
+                        search_name = room_name[9:] 
 
                     search_words = search_name.split(' ')
                     all_words_found = True
@@ -156,16 +155,15 @@ def scrape_building(search_term, building_rooms):
                         print(f"    Checking for room: '{room_name}' (Simplified: '{search_name}')", flush=True)
 
                     for word in search_words:
-                        if not word: # Skip empty strings from double spaces
+                        if not word: 
                             continue
                         
                         escaped_word = re.escape(word)
-                        # Case-insensitive search
                         if not re.search(escaped_word, element, re.IGNORECASE):
                             all_words_found = False
                             if DEBUG:
                                 print(f"      [MISS] Word '{word}' not found.", flush=True)
-                            break # No need to check other words
+                            break 
                     
                     if all_words_found:
                         if DEBUG:
@@ -207,7 +205,7 @@ def scrape_building(search_term, building_rooms):
             
     except Exception as e:
         print(f"ERROR: Failed to scrape {search_term}: {e}", flush=True)
-        return {} # Return empty dict on failure
+        return {} 
     finally:
         if driver:
             print(f"  Closing driver for {search_term}.", flush=True)
@@ -232,7 +230,6 @@ if __name__ == "__main__":
             building_data["rooms"]
         )
         
-        # Get timestamp *after* scraping is complete for this building
         update_time_iso = datetime.now().isoformat()
         
         if schedule_data:
@@ -240,7 +237,6 @@ if __name__ == "__main__":
         else:
             print(f"No data found or error during scrape for {building_key}.", flush=True)
 
-        # Structure the data with last_update and room schedules
         all_schedules[building_data["display_name"]] = {
             "last_update": update_time_iso,
             "rooms": schedule_data
@@ -248,7 +244,6 @@ if __name__ == "__main__":
 
     print("All scraping complete.", flush=True)
 
-    # Save the final dictionary to the specified JSON file
     try:
         with open(output_filename, 'w', encoding='utf-8') as f:
             json.dump(all_schedules, f, indent=2, sort_keys=True, ensure_ascii=False)
