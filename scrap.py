@@ -10,7 +10,7 @@ from selenium.common.exceptions import TimeoutException
 # --- DEBUG FLAG ---
 # Set to True for verbose, step-by-step logging inside the scraper
 # Set to False for standard, quieter operation
-DEBUG = False
+DEBUG = True
 # ------------------
 
 BUILDING_ROOMS = {
@@ -27,17 +27,17 @@ BUILDING_ROOMS = {
     "Fac droit": {
         "search_term": "Droit_Aile", 
         "display_name": "Fac Droit",
-        "rooms": [
-            'Salle 306', 'Séminaire 1', 'Séminaire 2', 
-            'Séminaire 3', 'salle B001', 'salle B002', 
-            'salle B004', 'salle B005', 'salle B101 Langues', 
-            'salle B102 Langues', 'salle B103 Langues', 
-            'salle B104 Langues', 'salle B106 Langues', 
-            'salle B107', 'salle B108', 'salle B109', 
-            'salle B209', 'salle B212', 'salle B213', 
-            'Salle B214 idex', 'Salle B215 idex', 
-            'Salle B313', 'Salle B406', 'Salle B407', 
-            'Salle soutenance B321', 'Salle soutenance B321'
+         "rooms": [
+            'Droit A _ Salle 306', 'Droit A _ Séminaire 1', 'Droit A _ Séminaire 2', 
+            'Droit A _ Séminaire 3', 'Droit B_ salle B001', 'Droit B_ salle B002', 
+            'Droit B_ salle B004', 'Droit B_ salle B005', 'Droit B_ salle B101 Langues', 
+            'Droit B_ salle B102 Langues', 'Droit B_ salle B103 Langues', 
+            'Droit B_ salle B104 Langues', 'Droit B_ salle B106 Langues', 
+            'Droit B_ salle B107', 'Droit B_ salle B108', 'Droit B_ salle B109', 
+            'Droit B_ salle B209', 'Droit B_ salle B212', 'Droit B_ salle B213', 
+            'Droit B_ Salle B214 idex', 'Droit B_ Salle B215 idex', 
+            'Droit B_ Salle B313', 'Droit B_ Salle B406', 'Droit B_ Salle B407', 
+            'Droit B_ Salle soutenance B321', 'Droit B_ Salle soutenance B321'
         ]
     }, 
     "Fac Eco Gestion": {
@@ -142,15 +142,34 @@ def scrape_building(search_term, building_rooms):
                     print(f"  Checking against rooms list (first 5): {building_rooms[:5]}...", flush=True)
 
                 for room_name in building_rooms:
-                    escaped_room_name = re.escape(room_name)
-                    pattern1_str = r'{}\[=\"\"'.format(escaped_room_name)
-                    pattern2_str = r'{}=\"\"'.format(escaped_room_name)
-                    found1 = re.search(pattern1_str, element)
-                    found2 = re.search(pattern2_str, element)
                     
-                    if found1 or found2:
+                    search_name = room_name # Default for rooms like 'Salle 101'
+                    if room_name.startswith('Droit A _ '):
+                        search_name = room_name[10:] # Get 'Séminaire 3'
+                    elif room_name.startswith('Droit B_ '):
+                        search_name = room_name[9:]  # Get 'salle B004'
+
+                    search_words = search_name.split(' ')
+                    all_words_found = True
+                    
+                    if DEBUG:
+                        print(f"    Checking for room: '{room_name}' (Simplified: '{search_name}')", flush=True)
+
+                    for word in search_words:
+                        if not word: # Skip empty strings from double spaces
+                            continue
+                        
+                        escaped_word = re.escape(word)
+                        # Case-insensitive search
+                        if not re.search(escaped_word, element, re.IGNORECASE):
+                            all_words_found = False
+                            if DEBUG:
+                                print(f"      [MISS] Word '{word}' not found.", flush=True)
+                            break # No need to check other words
+                    
+                    if all_words_found:
                         if DEBUG:
-                            print(f"    [MATCH] Found room: '{room_name}' (Pattern 1: {bool(found1)}, Pattern 2: {bool(found2)})", flush=True)
+                             print(f"    [MATCH] Found room: '{room_name}' (All parts matched)", flush=True)
                         found_rooms_for_event.append(room_name)
 
                 if DEBUG:
@@ -182,7 +201,7 @@ def scrape_building(search_term, building_rooms):
             if room not in roomDict:
                 if DEBUG:
                     print(f"  Adding empty list for un-found room: '{room}'", flush=True)
-                roomDict[room] = [] # Represented as an empty list of bookings
+                roomDict[room] = [] 
         
         print(f"  Processed all elements. Found data for {len(roomDict)} rooms.", flush=True)
             
