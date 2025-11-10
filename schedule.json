@@ -1,6 +1,6 @@
 {
   "Fac Droit": {
-    "last_update": "2025-11-10T07:23:43.941826",
+    "last_update": "2025-11-10T12:17:08.790518",
     "rooms": {
       "Droit A _ Salle 306": [
         [
@@ -79,7 +79,12 @@
         ]
       ],
       "Droit B_ Salle B313": [],
-      "Droit B_ Salle B406": [],
+      "Droit B_ Salle B406": [
+        [
+          "17h00",
+          "18h00"
+        ]
+      ],
       "Droit B_ Salle B407": [],
       "Droit B_ Salle soutenance B321": [],
       "Droit B_ salle B001": [
@@ -241,7 +246,7 @@
     }
   },
   "Fac Eco Gestion": {
-    "last_update": "2025-11-10T07:23:52.209695",
+    "last_update": "2025-11-10T12:17:20.857807",
     "rooms": {
       "Salle 101": [
         [
@@ -345,7 +350,7 @@
     }
   },
   "IM2AG": {
-    "last_update": "2025-11-10T07:23:34.906530",
+    "last_update": "2025-11-10T12:16:55.354616",
     "rooms": {
       "f018": [
         [
