@@ -1,6 +1,6 @@
 {
   "Fac Droit": {
-    "last_update": "2026-01-26T07:33:07.959079",
+    "last_update": "2026-01-26T12:20:30.159113",
     "rooms": {
       "Droit A _ Salle 306": [],
       "Droit A _ Séminaire 1": [
@@ -118,18 +118,6 @@
         [
           "14h00",
           "16h00"
-        ],
-        [
-          "11h00",
-          "12h30"
-        ],
-        [
-          "09h30",
-          "11h00"
-        ],
-        [
-          "08h00",
-          "09h30"
         ]
       ],
       "Droit B_ salle B103 Langues": [
@@ -219,7 +207,7 @@
     }
   },
   "Fac Eco Gestion": {
-    "last_update": "2026-01-26T07:33:15.970125",
+    "last_update": "2026-01-26T12:20:39.508448",
     "rooms": {
       "Salle 101": [
         [
@@ -321,12 +309,17 @@
       "Salle EG09": [],
       "Salle EPE (204-205)": [],
       "Salle Entresol": [],
-      "Salle Fardeheb": [],
+      "Salle Fardeheb": [
+        [
+          "14h00",
+          "16h00"
+        ]
+      ],
       "Salle IES": []
     }
   },
   "IM2AG": {
-    "last_update": "2026-01-26T07:32:58.383698",
+    "last_update": "2026-01-26T12:20:18.814531",
     "rooms": {
       "f018": [
         [
