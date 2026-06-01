@@ -1,6 +1,6 @@
 {
   "Fac Droit": {
-    "last_update": "2026-05-31T13:04:25.852486",
+    "last_update": "2026-06-01T12:42:25.277662",
     "rooms": {
       "Droit A _ Salle 306": [],
       "Droit A _ Séminaire 1": [],
@@ -9,14 +9,36 @@
       "Droit B_ Salle B214 idex": [],
       "Droit B_ Salle B215 idex": [],
       "Droit B_ Salle B313": [],
-      "Droit B_ Salle B406": [],
+      "Droit B_ Salle B406": [
+        [
+          "14h30",
+          "16h30"
+        ],
+        [
+          "09h15",
+          "12h00"
+        ]
+      ],
       "Droit B_ Salle B407": [],
       "Droit B_ Salle soutenance B321": [],
       "Droit B_ salle B001": [],
       "Droit B_ salle B002": [],
       "Droit B_ salle B004": [],
       "Droit B_ salle B005": [],
-      "Droit B_ salle B101 Langues": [],
+      "Droit B_ salle B101 Langues": [
+        [
+          "17h00",
+          "19h00"
+        ],
+        [
+          "15h00",
+          "17h00"
+        ],
+        [
+          "10h00",
+          "12h00"
+        ]
+      ],
       "Droit B_ salle B102 Langues": [],
       "Droit B_ salle B103 Langues": [],
       "Droit B_ salle B104 Langues": [],
@@ -24,15 +46,29 @@
       "Droit B_ salle B107": [],
       "Droit B_ salle B108": [],
       "Droit B_ salle B109": [],
-      "Droit B_ salle B209": [],
+      "Droit B_ salle B209": [
+        [
+          "12h00",
+          "12h30"
+        ]
+      ],
       "Droit B_ salle B212": [],
       "Droit B_ salle B213": []
     }
   },
   "Fac Eco Gestion": {
-    "last_update": "2026-05-31T13:04:33.851844",
+    "last_update": "2026-06-01T12:42:34.876648",
     "rooms": {
-      "Salle 101": [],
+      "Salle 101": [
+        [
+          "14h00",
+          "16h00"
+        ],
+        [
+          "10h00",
+          "12h00"
+        ]
+      ],
       "Salle 104": [],
       "Salle 106": [],
       "Salle 107 Info": [],
@@ -40,42 +76,109 @@
       "Salle 110": [],
       "Salle 112 Info": [],
       "Salle 400": [],
-      "Salle 524": [],
-      "Salle EG01": [],
+      "Salle 524": [
+        [
+          "15h00",
+          "16h30"
+        ]
+      ],
+      "Salle EG01": [
+        [
+          "09h30",
+          "10h30"
+        ]
+      ],
       "Salle EG02": [],
-      "Salle EG03": [],
+      "Salle EG03": [
+        [
+          "10h00",
+          "12h00"
+        ]
+      ],
       "Salle EG04": [],
       "Salle EG05": [],
       "Salle EG06": [],
       "Salle EG07 Info": [],
       "Salle EG09": [],
       "Salle EPE (204-205)": [],
-      "Salle Entresol": [],
+      "Salle Entresol": [
+        [
+          "13h45",
+          "15h45"
+        ]
+      ],
       "Salle Fardeheb": [],
       "Salle IES": []
     }
   },
   "IM2AG": {
-    "last_update": "2026-05-31T13:04:16.016704",
+    "last_update": "2026-06-01T12:42:14.718255",
     "rooms": {
       "f018": [],
       "f022": [],
       "f107": [],
       "f109": [],
-      "f111": [],
-      "f112": [],
-      "f113": [],
+      "f111": [
+        [
+          "13h30",
+          "18h30"
+        ],
+        [
+          "08h00",
+          "13h00"
+        ]
+      ],
+      "f112": [
+        [
+          "13h30",
+          "18h30"
+        ],
+        [
+          "08h00",
+          "13h00"
+        ]
+      ],
+      "f113": [
+        [
+          "13h30",
+          "18h30"
+        ],
+        [
+          "08h00",
+          "13h00"
+        ]
+      ],
       "f114": [],
       "f115": [],
-      "f116": [],
+      "f116": [
+        [
+          "13h30",
+          "15h00"
+        ]
+      ],
       "f117": [],
-      "f118": [],
+      "f118": [
+        [
+          "17h30",
+          "18h30"
+        ]
+      ],
       "f201": [],
-      "f202": [],
+      "f202": [
+        [
+          "08h00",
+          "18h00"
+        ]
+      ],
       "f203": [],
       "f204": [],
       "f211": [],
-      "f212": [],
+      "f212": [
+        [
+          "08h00",
+          "18h00"
+        ]
+      ],
       "f213": [],
       "f214": [],
       "f215": [],
