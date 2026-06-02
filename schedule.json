@@ -1,6 +1,6 @@
 {
   "Fac Droit": {
-    "last_update": "2026-06-02T11:21:27.792445",
+    "last_update": "2026-06-02T15:48:53.120543",
     "rooms": {
       "Droit A _ Salle 306": [],
       "Droit A _ Séminaire 1": [],
@@ -57,7 +57,7 @@
     }
   },
   "Fac Eco Gestion": {
-    "last_update": "2026-06-02T11:21:37.124305",
+    "last_update": "2026-06-02T15:49:04.998617",
     "rooms": {
       "Salle 101": [
         [
@@ -112,7 +112,7 @@
     }
   },
   "IM2AG": {
-    "last_update": "2026-06-02T11:21:17.579043",
+    "last_update": "2026-06-02T15:48:40.615242",
     "rooms": {
       "f018": [],
       "f022": [],
