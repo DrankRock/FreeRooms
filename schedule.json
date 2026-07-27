@@ -1,14 +1,96 @@
 {
   "Fac Droit": {
-    "last_update": "2026-07-26T12:59:49.317445",
-    "rooms": {}
+    "last_update": "2026-07-27T10:46:48.456226",
+    "rooms": {
+      "Droit A _ Salle 306": [],
+      "Droit A _ Séminaire 1": [],
+      "Droit A _ Séminaire 2": [],
+      "Droit A _ Séminaire 3": [],
+      "Droit B_ Salle B214 idex": [],
+      "Droit B_ Salle B215 idex": [],
+      "Droit B_ Salle B313": [],
+      "Droit B_ Salle B406": [],
+      "Droit B_ Salle B407": [],
+      "Droit B_ Salle soutenance B321": [],
+      "Droit B_ salle B001": [],
+      "Droit B_ salle B002": [],
+      "Droit B_ salle B004": [],
+      "Droit B_ salle B005": [],
+      "Droit B_ salle B101 Langues": [],
+      "Droit B_ salle B102 Langues": [],
+      "Droit B_ salle B103 Langues": [],
+      "Droit B_ salle B104 Langues": [],
+      "Droit B_ salle B106 Langues": [],
+      "Droit B_ salle B107": [],
+      "Droit B_ salle B108": [],
+      "Droit B_ salle B109": [],
+      "Droit B_ salle B209": [],
+      "Droit B_ salle B212": [],
+      "Droit B_ salle B213": []
+    }
   },
   "Fac Eco Gestion": {
-    "last_update": "2026-07-26T13:05:30.455288",
-    "rooms": {}
+    "last_update": "2026-07-27T10:46:57.922766",
+    "rooms": {
+      "Salle 101": [],
+      "Salle 104": [],
+      "Salle 106": [],
+      "Salle 107 Info": [],
+      "Salle 108": [],
+      "Salle 110": [],
+      "Salle 112 Info": [],
+      "Salle 400": [
+        [
+          "08h00",
+          "18h00"
+        ]
+      ],
+      "Salle 524": [],
+      "Salle EG01": [],
+      "Salle EG02": [],
+      "Salle EG03": [],
+      "Salle EG04": [],
+      "Salle EG05": [],
+      "Salle EG06": [],
+      "Salle EG07 Info": [],
+      "Salle EG09": [],
+      "Salle EPE (204-205)": [],
+      "Salle Entresol": [],
+      "Salle Fardeheb": [],
+      "Salle IES": []
+    }
   },
   "IM2AG": {
-    "last_update": "2026-07-26T12:54:07.457176",
-    "rooms": {}
+    "last_update": "2026-07-27T10:46:36.663677",
+    "rooms": {
+      "f018": [],
+      "f022": [],
+      "f107": [],
+      "f109": [],
+      "f111": [],
+      "f112": [],
+      "f113": [],
+      "f114": [],
+      "f115": [],
+      "f116": [],
+      "f117": [],
+      "f118": [],
+      "f201": [],
+      "f202": [],
+      "f203": [],
+      "f204": [],
+      "f211": [],
+      "f212": [],
+      "f213": [],
+      "f214": [],
+      "f215": [],
+      "f216": [],
+      "f217": [],
+      "f218": [],
+      "f316": [],
+      "f319": [],
+      "f320": [],
+      "f321": []
+    }
   }
 }
