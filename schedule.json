@@ -1,13 +1,23 @@
 {
   "Fac Droit": {
-    "last_update": "2026-08-23T12:12:29.416361",
+    "last_update": "2026-08-24T07:59:39.083689",
     "rooms": {
       "Droit A _ Salle 306": [],
       "Droit A _ Séminaire 1": [],
       "Droit A _ Séminaire 2": [],
       "Droit A _ Séminaire 3": [],
-      "Droit B_ Salle B214 idex": [],
-      "Droit B_ Salle B215 idex": [],
+      "Droit B_ Salle B214 idex": [
+        [
+          "08h00",
+          "19h00"
+        ]
+      ],
+      "Droit B_ Salle B215 idex": [
+        [
+          "08h00",
+          "18h00"
+        ]
+      ],
       "Droit B_ Salle B313": [],
       "Droit B_ Salle B406": [],
       "Droit B_ Salle B407": [],
@@ -30,7 +40,7 @@
     }
   },
   "Fac Eco Gestion": {
-    "last_update": "2026-08-23T12:12:38.060604",
+    "last_update": "2026-08-24T07:59:46.493776",
     "rooms": {
       "Salle 101": [],
       "Salle 104": [],
@@ -41,7 +51,16 @@
       "Salle 112 Info": [],
       "Salle 400": [],
       "Salle 524": [],
-      "Salle EG01": [],
+      "Salle EG01": [
+        [
+          "15h30",
+          "17h30"
+        ],
+        [
+          "13h00",
+          "15h00"
+        ]
+      ],
       "Salle EG02": [],
       "Salle EG03": [],
       "Salle EG04": [],
@@ -56,7 +75,7 @@
     }
   },
   "IM2AG": {
-    "last_update": "2026-08-23T12:12:20.873502",
+    "last_update": "2026-08-24T07:59:30.762493",
     "rooms": {
       "f018": [],
       "f022": [],
@@ -66,7 +85,12 @@
       "f112": [],
       "f113": [],
       "f114": [],
-      "f115": [],
+      "f115": [
+        [
+          "09h00",
+          "16h00"
+        ]
+      ],
       "f116": [],
       "f117": [],
       "f118": [],
